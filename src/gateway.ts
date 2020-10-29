@@ -222,13 +222,28 @@ export class Gateway extends EventEmitter {
         if (this.config.gateway.protocol.https.ciphers) {
             credentials.ciphers = this.config.gateway.protocol.https.ciphers.join(':');
         }
+        
+        if (this.config.gateway.protocol.https.secureOptions){
+            let toEvalOptions = "";
+            let secureOptionsBitMask = 0;
+            const { constants } = require('crypto');
+            console.log(constants);
+            this.config.gateway.protocol.https.secureOptions.forEach((opt,index) => {                
+                if(index < this.config.gateway.protocol.https.secureOptions.length -1) 
+                    toEvalOptions += 'constants.' + opt + " | "; 
+                else
+                    toEvalOptions += 'constants.' + opt; 
+            });
+            eval("secureOptionsBitMask = " + toEvalOptions + ";");
+            credentials.secureOptions = secureOptionsBitMask;
+        }
         _.assign(credentials, _.omit(this.config.gateway.protocol.https, 'privateKey',
-            'certificate', 'certificateAuthority', 'ciphers'));
+            'certificate', 'certificateAuthority', 'secureOptions', 'ciphers'));
         const https = require('https');
         return https.createServer(credentials, app);
     }
 
-    private async loadApis(): Promise<void> {
+    private async loadApis(): Promise<void> {            
         const configs: Array<ApiConfig> = await this.configService.getAllApiConfig();
         await this.apiPipeline.loadApis(configs, this.server);
     }

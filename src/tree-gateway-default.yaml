@@ -1,11 +1,11 @@
 underProxy: false
 protocol:
     http:
-        listenPort: 8000
+        listenPort: 8001
 admin:
     protocol:
         http:
-            listenPort: 8001
+            listenPort: 8002
     accessLogger:
         msg: 'HTTP {{req.method}} - {{res.statusCode}} - {{req.url}} ({{res.responseTime}}ms)'
         console:

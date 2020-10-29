@@ -32,6 +32,11 @@ export interface HttpsConfig {
      */
     certificateAuthority?: string;
     /**
+     * SSL Secure options 
+     * Reference: https://nodejs.org/api/crypto.html#crypto_openssl_options
+     */
+    secureOptions?: Array<string>;
+    /**
      * A list of Ciphers to use.
      */
     ciphers?: Array<string>;
@@ -49,6 +54,7 @@ const httpConfigSchema = Joi.object().keys({
 const httpsConfigSchema = Joi.object().keys({
     certificate: Joi.string().required(),
     certificateAuthority: Joi.string(),
+    secureOptions: Joi.array().items(Joi.string()),
     ciphers: Joi.array().items(Joi.string()),
     honorCipherOrder: Joi.boolean(),
     listenPort: Joi.alternatives([Joi.number().positive(), Joi.string()]).required(),

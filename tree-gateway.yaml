@@ -1,0 +1,77 @@
+database:
+    redis:
+        standalone:
+            host: localhost
+            port: 6379
+            password: redis-password-here
+gateway:            
+    protocol:
+        http:
+            listenPort: 80
+        https:
+            listenPort: 443        
+            privateKey: "./server.key"
+            certificate: "./server.cer"
+            secureOptions:
+                - "SSL_OP_NO_SSLv2"
+                - "SSL_OP_NO_SSLv3"
+                - "SSL_OP_NO_TLSv1"
+                - "SSL_OP_NO_TLSv1_1"                
+            ciphers:
+                - "ECDHE-RSA-AES256-GCM-SHA512"
+                - "DHE-RSA-AES256-GCM-SHA512"
+                - "ECDHE-RSA-AES256-GCM-SHA384"
+                - "DHE-RSA-AES256-GCM-SHA384"
+                - "ECDHE-RSA-AES256-SHA384"
+            honorCipherOrder: true
+    admin:
+        protocol:
+            http:
+                listenPort: 82
+                
+        accessLogger:
+            msg: 'HTTP {{req.method}} - {{res.statusCode}} - {{req.url}} ({{res.responseTime}}ms)'
+            console:
+                timestamp: true
+                colorize: true
+            file:
+                timestamp: true
+                json: false
+                prettyPrint: true
+                outputDir: ./logs
+        userService:
+            jwtSecret: 5464878fd84bdfd1b22d85a677ba9042ee2176f5
+        apiDocs:
+            path: api-docs
+    logger:
+        level: info
+        console:
+            colorize: true
+        file:
+            timestamp: true
+            outputDir: ./logs
+            json: false
+            prettyPrint: true
+    accessLogger:
+        msg: 'HTTP {{req.method}} - {{res.statusCode}} - {{req.url}} ({{res.responseTime}}ms)'
+        console:
+            timestamp: true
+            colorize: true
+        file:
+            timestamp: true
+            json: false
+            prettyPrint: true
+            outputDir: ./logs
+    healthcheck: /healthcheck
+    cors:
+        origin:
+            enableAll: true
+    errorHandler:
+        name: mustache
+        options:
+            template: "<html>    <head></head>\n    <body>\n        Erro ao Acessar um serviço do Robbyson. <br/>\n        Mensagem: <br/>\n        <p>{{error.message}}</p>\n    </body>\n</html>\n"
+            contentType: text/html
+    analytics:
+        enabled: true
+        logger:
+            name: redis
